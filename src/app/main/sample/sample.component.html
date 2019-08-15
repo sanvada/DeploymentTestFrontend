@@ -1,0 +1,49 @@
+<div class="page-layout blank p-24" fusePerfectScrollbar fxFlex fxLayout="row">
+
+    <form (submit)="submitDeploymentDefiniton()" fxFlex fxLayout="column" *ngIf="!loading && !deployed">
+
+        <h1 class="mat-display-2">ELK Configuration</h1>
+
+        <mat-form-field class="w-400">
+            <input name="elkPortNumber" placeholder="ELK Port Number" matInput
+                [(ngModel)]="deploymentDefinition.elkTemplate.portNumber">
+        </mat-form-field>
+
+
+        <div fxLayout="row" fxLayoutAlign="start center">
+            <h1 class="mat-display-2 mt-40">VM Configuration</h1>
+            <button type="button" color="primary" class="ml-40 h-40" mat-raised-button (click)="addWindowsMachine()">Add
+                Windows Machine</button>
+        </div>
+
+
+        <div fxLayout="row">
+            <div *ngFor="let winTemplate of deploymentDefinition.windowsTemplates; let i=index" fxLayout="column"
+                fxFlex="30" class="m-20">
+                <h1>Windows Machine #{{i + 1}}</h1>
+                <mat-slide-toggle name="enableIis" [(ngModel)]="winTemplate.enableIis">Enable IIS</mat-slide-toggle>
+                <mat-slide-toggle name="enableIisFileBeat" [(ngModel)]="winTemplate.enableIisFileBeat">Enable IIS
+                    FileBeat</mat-slide-toggle>
+                <mat-form-field>
+                    <input type="number" name="numCpus" placeholder="Number of CPUs" matInput [(ngModel)]="winTemplate.numberOfCpus">
+                </mat-form-field>
+                <mat-form-field>
+                    <input type="number" name="mbRam" placeholder="Megabytes of RAM" matInput
+                        [(ngModel)]="winTemplate.megabytesOfRam">
+                </mat-form-field>
+            </div>
+        </div>
+
+        <button type="submit" mat-raised-button color="accent" class="m-40 w-80">Submit</button>
+
+    </form>
+
+    <mat-spinner  class="m-100" *ngIf="loading"></mat-spinner>
+
+    <div class="w-100-p" fxLayout="column" fxLayoutAlign="start start" *ngIf="!loading && deployed">
+        <h1 class="mat-display-2" fxFlex class="m-100" >Your infrastructure has been deployed</h1>
+
+        <h1 class="m-40">ELK IP: <a target="_blank" href="http://{{deploymentResult.elkIp}}:5601">{{deploymentResult.elkIp}}</a></h1>
+        <h1 class="m-40">Windows IPs: {{deploymentResult.windowsIps | json}}</h1>
+    </div>
+</div>
